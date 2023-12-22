@@ -29,11 +29,17 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-userSchema.pre("save", async function () {
-    this.password = await bcrypt.hash(this.password, 12);
+userSchema.pre("save", async function (next) {
+    try {
+        this.password = await bcrypt.hash(this.password, 12);
 
-    if (this.password === process.env.ADMIN_EMAIL) {
-        this.isAdmin = true;
+        if (this.email === process.env.ADMIN_EMAIL) {
+            this.isAdmin = true;
+        }
+
+        next();
+    } catch (error) {
+        next(error);
     }
 });
 
