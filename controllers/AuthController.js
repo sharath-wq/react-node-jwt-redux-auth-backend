@@ -62,7 +62,7 @@ module.exports.Login = async (req, res, next) => {
             httpOnly: false,
         });
 
-        res.status(201).json({ message: "User logged in successfully", success: true, accessToken });
+        res.status(201).json({ message: "User logged in successfully", success: true, user, accessToken });
         next();
     } catch (error) {
         console.log(error);
