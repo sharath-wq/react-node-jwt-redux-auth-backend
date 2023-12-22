@@ -15,7 +15,7 @@ module.exports.useVerification = (req, res) => {
             return res.json({ status: false });
         } else {
             const user = await User.findOne({ email: data.email });
-            if (user) return res.json({ status: true, user: user });
+            if (user) return res.json({ status: true, username: user.username, isAdmin: user.isAdmin });
             else return res.json({ status: false });
         }
     });
