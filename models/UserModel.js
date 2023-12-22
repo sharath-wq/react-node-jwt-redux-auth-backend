@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Your password is required"],
     },
+    refreshToken: {
+        type: String,
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     createdAt: {
         type: Date,
         default: new Date(),
@@ -23,6 +31,10 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12);
+
+    if (this.password === process.env.ADMIN_EMAIL) {
+        this.isAdmin = true;
+    }
 });
 
 module.exports = mongoose.model("User", userSchema);
