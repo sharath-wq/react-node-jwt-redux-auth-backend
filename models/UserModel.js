@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    imageUrl: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: new Date(),

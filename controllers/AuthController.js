@@ -73,8 +73,6 @@ module.exports.Refresh = async (req, res, next) => {
     try {
         const token = req.cookies.refreshToken;
 
-        console.log(token);
-
         if (!token) {
             return res.json({ status: false });
         }
