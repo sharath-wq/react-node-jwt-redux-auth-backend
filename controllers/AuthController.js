@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
-const { createSecretToken } = require("../util/SecretToken");
+const { createAccessToken, createRefreshToken } = require("../util/SecretTokens");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports.SignUp = async (req, res, next) => {
     try {
@@ -17,14 +18,16 @@ module.exports.SignUp = async (req, res, next) => {
             username,
             createdAt,
         });
-        const token = createSecretToken(user._id);
 
-        res.cookie("token", token, {
+        const accessToken = createAccessToken(user.email, user.isAdmin);
+        const refreshToken = createRefreshToken(user.email, user.isAdmin);
+
+        res.cookie("refreshToken", refreshToken, {
             withCredentials: true,
             httpOnly: false,
         });
 
-        res.status(201).json({ message: "User signed in successfully", success: true, user });
+        res.status(201).json({ message: "User signed in successfully", success: true, user, accessToken });
         next();
     } catch (error) {
         console.log(error);
@@ -51,15 +54,41 @@ module.exports.Login = async (req, res, next) => {
             return res.json({ message: "Invalid credentials" });
         }
 
-        const token = createSecretToken(user._id);
+        const accessToken = createAccessToken(user.email, user.isAdmin);
+        const refreshToken = createRefreshToken(user.email, user.isAdmin);
 
-        res.cookie("token", token, {
+        res.cookie("refreshToken", refreshToken, {
             withCredentials: true,
             httpOnly: false,
         });
 
-        res.status(201).json({ message: "User logged in successfully", success: true });
+        res.status(201).json({ message: "User logged in successfully", success: true, user, accessToken });
         next();
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+module.exports.Refresh = async (req, res, next) => {
+    try {
+        const token = req.cookies.refreshToken;
+
+        console.log(token);
+
+        if (!token) {
+            return res.json({ status: false });
+        }
+
+        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY, async (err, data) => {
+            if (err) {
+                return res.json({ status: false });
+            } else {
+                console.log(data);
+                const accessToken = createAccessToken(data.email, data.isAdmin);
+                res.status(201).json({ message: "New Access Token Generated", success: true, accessToken });
+                next();
+            }
+        });
     } catch (error) {
         console.log(error);
     }
