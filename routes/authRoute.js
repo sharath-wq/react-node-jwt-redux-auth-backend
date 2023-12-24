@@ -1,4 +1,4 @@
-const { SignUp, Login, Refresh } = require("../controllers/AuthController");
+const { SignUp, Login, Refresh, Profile } = require("../controllers/AuthController");
 const { useVerification } = require("../middlewares/authMiddleware");
 const { cloudinary, handleUpload } = require("../config/cloudinaryConfing");
 const User = require("../models/UserModel");
@@ -14,6 +14,7 @@ router.get("/", useVerification);
 router.post("/signup", SignUp);
 router.post("/login", Login);
 router.post("/refresh", Refresh);
+router.get("/profile/:id", Profile);
 
 router.post("/upload", upload.single("image"), async (req, res) => {
     try {
@@ -25,9 +26,13 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
         const cldRes = await handleUpload(dataURI);
 
-        const user = await User.findByIdAndUpdate(req.body.id, {
-            imageUrl: cldRes.url,
-        });
+        const user = await User.findByIdAndUpdate(
+            req.body.id,
+            {
+                imageUrl: cldRes.url,
+            },
+            { new: true }
+        );
 
         return res.status(201).send({ message: "Image uploaded successfully!", user });
     } catch (error) {

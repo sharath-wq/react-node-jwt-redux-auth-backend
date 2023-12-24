@@ -91,3 +91,18 @@ module.exports.Refresh = async (req, res, next) => {
         console.log(error);
     }
 };
+
+module.exports.Profile = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findById(id);
+
+        res.status(200).json({
+            success: true,
+            user: { username: user.username, imageUrl: user.imageUrl, email: user.email },
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
