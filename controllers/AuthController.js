@@ -106,3 +106,21 @@ module.exports.Profile = async (req, res, next) => {
         console.log(error);
     }
 };
+
+module.exports.Update = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            {
+                username: req.body.username,
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.log(error);
+    }
+};

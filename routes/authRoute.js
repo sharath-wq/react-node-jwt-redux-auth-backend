@@ -1,4 +1,4 @@
-const { SignUp, Login, Refresh, Profile } = require("../controllers/AuthController");
+const { SignUp, Login, Refresh, Profile, Update } = require("../controllers/AuthController");
 const { useVerification } = require("../middlewares/authMiddleware");
 const { cloudinary, handleUpload } = require("../config/cloudinaryConfing");
 const User = require("../models/UserModel");
@@ -15,6 +15,7 @@ router.post("/signup", SignUp);
 router.post("/login", Login);
 router.post("/refresh", Refresh);
 router.get("/profile/:id", Profile);
+router.post("/update/:id", Update);
 
 router.post("/upload", upload.single("image"), async (req, res) => {
     try {
