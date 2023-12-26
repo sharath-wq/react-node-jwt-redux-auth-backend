@@ -34,7 +34,6 @@ module.exports.Users = async (req, res, next) => {
 module.exports.UserDetails = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const user = await User.findById(id);
 
         res.status(200).json({ success: true, user });
@@ -50,6 +49,22 @@ module.exports.DeleteUser = async (req, res, next) => {
         const deletedUser = await User.findByIdAndDelete(id);
 
         res.status(200).json({ success: true, message: "User deleted Successfully" });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+module.exports.UpdateUser = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const { email, username } = req.body;
+        const updatedUser = await User.findByIdAndUpdate(id, {
+            email: email,
+            username: username,
+        });
+
+        res.status(200).json({ success: true, message: "User Updated Successfully", updatedUser });
     } catch (error) {
         console.log(error);
     }
