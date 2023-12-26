@@ -4,11 +4,21 @@ module.exports.Users = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 6;
+        const searchTerm = req.query.search || "";
 
         const skip = (page - 1) * limit;
 
-        const users = await User.find({ isAdmin: false }).skip(skip).limit(limit);
-        const totalUsers = await User.countDocuments({ isAdmin: false });
+        const query = { isAdmin: false };
+        if (searchTerm) {
+            query.$or = [
+                { username: { $regex: searchTerm, $options: "i" } },
+                { email: { $regex: searchTerm, $options: "i" } },
+            ];
+        }
+
+        const users = await User.find(query).skip(skip).limit(limit);
+
+        const totalUsers = await User.countDocuments(query);
 
         const totalPages = Math.ceil(totalUsers / limit);
 
