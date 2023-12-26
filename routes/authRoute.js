@@ -1,4 +1,5 @@
 const { SignUp, Login, Refresh, Profile, Update } = require("../controllers/AuthController");
+const { Users, UserDetails, DeleteUser } = require("../controllers/UserController");
 const { useVerification } = require("../middlewares/authMiddleware");
 const { cloudinary, handleUpload } = require("../config/cloudinaryConfing");
 const User = require("../models/UserModel");
@@ -41,5 +42,10 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         return res.status(500).send("Error uploading image.");
     }
 });
+
+// User Routes
+router.get("/users", Users);
+router.get("/user/:id", UserDetails);
+router.delete("/user/:id/delete", DeleteUser);
 
 module.exports = router;
