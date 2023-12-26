@@ -79,3 +79,25 @@ module.exports.UpdateUser = async (req, res, next) => {
         console.log(error);
     }
 };
+
+module.exports.AddUser = async (req, res, next) => {
+    try {
+        const { email, password, username } = req.body;
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.json({ message: "User already exists" });
+        }
+
+        const user = await User.create({
+            email,
+            password,
+            username,
+        });
+
+        res.status(202).json({ message: "User created Successfully", success: true, user });
+        next();
+    } catch (error) {
+        console.log(error);
+    }
+};

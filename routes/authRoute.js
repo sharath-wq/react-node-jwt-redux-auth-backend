@@ -1,5 +1,5 @@
 const { SignUp, Login, Refresh, Profile, Update } = require("../controllers/AuthController");
-const { Users, UserDetails, DeleteUser, UpdateUser } = require("../controllers/UserController");
+const { Users, UserDetails, DeleteUser, UpdateUser, AddUser } = require("../controllers/UserController");
 const { useVerification } = require("../middlewares/authMiddleware");
 const { cloudinary, handleUpload } = require("../config/cloudinaryConfing");
 const User = require("../models/UserModel");
@@ -48,5 +48,6 @@ router.get("/users", Users);
 router.get("/user/:id", UserDetails);
 router.delete("/user/:id/delete", DeleteUser);
 router.post("/user/:id/edit", UpdateUser);
+router.post("/add", AddUser);
 
 module.exports = router;
