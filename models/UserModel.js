@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    imageUrl: {
+        type: String,
+        default: "https://avatars.githubusercontent.com/u/47313528?v=4",
+    },
     createdAt: {
         type: Date,
         default: new Date(),

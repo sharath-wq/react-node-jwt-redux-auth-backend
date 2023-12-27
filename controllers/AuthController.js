@@ -73,8 +73,6 @@ module.exports.Refresh = async (req, res, next) => {
     try {
         const token = req.cookies.refreshToken;
 
-        console.log(token);
-
         if (!token) {
             return res.json({ status: false });
         }
@@ -89,6 +87,39 @@ module.exports.Refresh = async (req, res, next) => {
                 next();
             }
         });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+module.exports.Profile = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findById(id);
+
+        res.status(200).json({
+            success: true,
+            user: { username: user.username, imageUrl: user.imageUrl, email: user.email },
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+module.exports.Update = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            {
+                username: req.body.username,
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, user });
     } catch (error) {
         console.log(error);
     }
